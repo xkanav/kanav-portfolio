@@ -1,0 +1,181 @@
+---
+import '../styles/global.css';
+import BoardBackground from '../components/BoardBackground';
+import KnightCursor from '../components/KnightCursor';
+import SessionHUD from '../components/SessionHUD';
+import { profile } from '../data/profile';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${profile.name} · ${profile.tagline}`,
+  description = profile.intro,
+} = Astro.props;
+
+const nav = [
+  { href: '#game', label: 'The Game' },
+  { href: '#research', label: 'Research' },
+  { href: '#moves', label: 'Brilliant Moves' },
+  { href: '#board', label: 'Off the Board' },
+  { href: '#contact', label: 'Your Move' },
+  { href: '#challenge', label: 'Play' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♞</text></svg>"
+    />
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=satoshi@400,500,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <BoardBackground client:load />
+    <KnightCursor client:load />
+    <SessionHUD client:load />
+
+    <header class="site-nav">
+      <div class="container nav-inner">
+        <a href="#top" class="nav-brand">KN<span class="accent">♞</span></a>
+        <nav>
+          {nav.map((item) => (
+            <a href={item.href} class="nav-link mono">{item.label}</a>
+          ))}
+        </nav>
+        <a href={profile.resume} class="nav-resume mono magnetic" download>Resume ↓</a>
+      </div>
+    </header>
+
+    <main id="top" style="position: relative; z-index: 1;">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <span class="mono">
+          © 2026 {profile.name} · White to play, and win.
+        </span>
+      </div>
+    </footer>
+
+    <script>
+      // scroll-reveal
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-revealed');
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { threshold: 0.12 }
+      );
+      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+
+      // easter egg: leave the tab and the game calls you back
+      const realTitle = document.title;
+      document.addEventListener('visibilitychange', () => {
+        document.title = document.hidden ? '♞ Your move.' : realTitle;
+      });
+
+      // magnetic hover: elements with .magnetic lean toward the cursor
+      if (window.matchMedia('(pointer: fine)').matches) {
+        document.querySelectorAll<HTMLElement>('.magnetic').forEach((el) => {
+          el.addEventListener('mousemove', (e) => {
+            const r = el.getBoundingClientRect();
+            const x = e.clientX - r.left - r.width / 2;
+            const y = e.clientY - r.top - r.height / 2;
+            el.style.transform = `translate(${x * 0.28}px, ${y * 0.28}px)`;
+          });
+          el.addEventListener('mouseleave', () => {
+            el.style.transform = '';
+          });
+        });
+      }
+    </script>
+
+    <style>
+      .site-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 90;
+        background: linear-gradient(to bottom, rgba(10,12,10,0.92), rgba(10,12,10,0.6) 70%, transparent);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        padding-top: 18px;
+        padding-bottom: 18px;
+      }
+      .nav-brand {
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        margin-right: auto;
+      }
+      .site-nav nav {
+        display: flex;
+        gap: 22px;
+      }
+      .nav-link {
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ivory-dim);
+        transition: color 0.2s;
+      }
+      .nav-link:hover { color: var(--accent); }
+      .nav-resume {
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--bg);
+        background: var(--accent);
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 999px;
+      }
+      .site-footer {
+        position: relative;
+        z-index: 1;
+        border-top: 1px solid var(--line);
+        padding: 32px 0 96px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+      }
+      @media (max-width: 760px) {
+        .site-nav nav { display: none; }
+      }
+    </style>
+  </body>
+</html>

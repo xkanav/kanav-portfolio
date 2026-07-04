@@ -1,0 +1,248 @@
+/* ────────────────────────────────────────────────
+   THE GRANDMASTER v2 — design tokens
+   near-black board · off-white · electric chartreuse
+   type: Clash Display / Satoshi / JetBrains Mono
+   ──────────────────────────────────────────────── */
+:root {
+  --bg: #0a0c0a;
+  --bg-elev: #10130e;
+  --bg-elev-2: #161a12;
+  --ivory: #f1f2e9;
+  --ivory-dim: #abafa0;
+  --muted: #6f7566;
+  --accent: #d4f933;
+  --accent-soft: rgba(212, 249, 51, 0.12);
+  --line: rgba(241, 242, 233, 0.08);
+  --line-strong: rgba(241, 242, 233, 0.16);
+  /* legacy alias, points at the accent */
+  --gold: var(--accent);
+  --gold-soft: var(--accent-soft);
+
+  --font-display: 'Clash Display', 'Arial Black', sans-serif;
+  --font-body: 'Satoshi', -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  --max-w: 1120px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 16.5px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+@media (pointer: fine) {
+  body.knight-cursor-active,
+  body.knight-cursor-active a,
+  body.knight-cursor-active button {
+    cursor: none;
+  }
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+a {
+  color: var(--ivory);
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ── layout primitives ── */
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+section {
+  position: relative;
+  padding: 130px 0;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.section-label::before {
+  content: '';
+  width: 36px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.section-sub {
+  color: var(--ivory-dim);
+  max-width: 580px;
+  margin-bottom: 60px;
+  font-size: 1.02rem;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.gold,
+.accent {
+  color: var(--accent);
+}
+
+/* ── scroll reveal ── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* big endgame heading (used by the contact reveal) */
+.contact-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 11vw, 8rem);
+  font-weight: 700;
+  line-height: 0.95;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+/* ── heading mask-reveal (see RevealHeading.tsx) ── */
+.rh {
+  position: relative;
+}
+.rh-base {
+  position: relative;
+  z-index: 1;
+}
+.rh-top {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  color: var(--accent);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+@media (pointer: coarse) {
+  .rh-top {
+    display: none;
+  }
+}
+
+/* ── annotation badges ── */
+.annotation {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── marquee ticker ── */
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  padding: 18px 0;
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+}
+
+/* motion comes from a JS RAF loop (see index.astro), so it runs
+   even where CSS animations are disabled */
+.marquee-track {
+  display: flex;
+  gap: 48px;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee-item {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ivory-dim);
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.marquee-item .star {
+  color: var(--accent);
+  font-size: 0.8rem;
+}
+
+.marquee-item.hot {
+  color: var(--accent);
+}
+
+/* ── magnetic elements get a spring transition ── */
+.magnetic {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

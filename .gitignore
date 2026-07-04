@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+.astro/
+
+# vercel
+.vercel/
+
+# environment
+.env
+.env.*
+
+# os / editor junk
+.DS_Store
+*.log
