@@ -355,11 +355,14 @@ const ticker = [
     letter-spacing: -0.015em;
   }
   .hero-line {
-    display: block;
+    display: flex;
+    justify-content: space-between;
     overflow: hidden;
   }
-  /* masked chartreuse copy of the name, revealed under the cursor */
-  .hero-name-wrap { position: relative; }
+  /* masked chartreuse copy of the name, revealed under the cursor.
+     the wrap shrinks to the widest line so both KANAV / NANDA
+     justify to the same width — left AND right edges line up. */
+  .hero-name-wrap { position: relative; width: fit-content; }
   .hero-name-top {
     position: absolute;
     inset: 0;
@@ -377,7 +380,7 @@ const ticker = [
     mask-image: radial-gradient(circle 150px at var(--mx, -999px) var(--my, -999px), #000 0, #000 55%, rgba(0, 0, 0, 0) 100%);
   }
   .hero-name-wrap.active .hero-name-top { opacity: 1; }
-  .hero-name-top .hero-line { display: block; }
+  .hero-name-top .hero-line { display: flex; justify-content: space-between; }
   .hero-name-top .hn-ch { display: inline-block; }
   @media (pointer: coarse) {
     .hero-name-top { display: none; }
