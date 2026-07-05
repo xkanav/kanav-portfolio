@@ -112,6 +112,19 @@ export default function BestMoveChallenge() {
     };
   }, [phase, close]);
 
+  // On a phone the board fills the screen; when the puzzle ends, make
+  // sure the result (Next / Retry) scrolls into view so it's tappable.
+  const sideRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (status === 'won' || status === 'lost') {
+      const t = setTimeout(
+        () => sideRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+        60
+      );
+      return () => clearTimeout(t);
+    }
+  }, [status]);
+
   const onSquare = (square: string) => {
     if (status !== 'running') return;
     const piece = board[square];
@@ -315,7 +328,7 @@ export default function BestMoveChallenge() {
                     </div>
                   </div>
 
-                  <div className="bmc-side">
+                  <div className="bmc-side" ref={sideRef}>
                     {/* clock */}
                     <div className="bmc-clock">
                       <svg width="80" height="80" viewBox="0 0 40 40">
@@ -782,8 +795,11 @@ export default function BestMoveChallenge() {
 
         @media (max-width: 720px) {
           .bmc-body { grid-template-columns: 1fr; }
+          /* keep the board from eating the whole screen so the panel + buttons show */
+          .bmc-board { max-width: 74vh; margin: 0 auto; width: 100%; }
           .bmc-side { flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: 16px; }
           .bmc-clock { margin-bottom: 0; }
+          .bmc-next, .bmc-ghostbtn { padding: 14px 22px; font-size: 0.8rem; }
         }
       `}</style>
     </>
