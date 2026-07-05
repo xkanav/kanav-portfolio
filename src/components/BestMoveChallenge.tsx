@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { puzzles, gauntletReward } from '../data/puzzles';
 import { makeBoard, pseudoMoves, pieceSrc, type Board } from '../lib/chess';
 import Confetti from './Confetti';
@@ -214,7 +215,7 @@ export default function BestMoveChallenge() {
       </div>
 
       {/* ── the modal gauntlet ── */}
-      {phase !== 'closed' && (
+      {phase !== 'closed' && typeof document !== 'undefined' && createPortal(
         <div className="bmc-overlay" onClick={close}>
           <div
             className="bmc-modal"
@@ -403,7 +404,8 @@ export default function BestMoveChallenge() {
               </>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <style>{`

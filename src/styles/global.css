@@ -171,6 +171,10 @@ section {
   .rh-top {
     display: none;
   }
+  /* no custom cursor on touch devices — hide the stray knight */
+  .kc-cursor {
+    display: none !important;
+  }
 }
 
 /* ── annotation badges ── */

@@ -119,6 +119,7 @@ export default function KnightCursor() {
       <div
         ref={dotRef}
         aria-hidden="true"
+        className="kc-cursor"
         style={{
           ...base,
           width: 5,
@@ -133,6 +134,7 @@ export default function KnightCursor() {
       <div
         ref={knightRef}
         aria-hidden="true"
+        className="kc-cursor"
         style={{
           ...base,
           fontSize: 26,
